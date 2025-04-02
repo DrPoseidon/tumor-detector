@@ -39,7 +39,6 @@ export function useUploadProgress({ onSuccess }: UseUploadProgressOptions) {
     } catch (error) {
       uploadStatus.value = UPLOAD_STATUS.ERROR;
       console.error(error);
-      isUploading.value = false;
     }
   };
 
