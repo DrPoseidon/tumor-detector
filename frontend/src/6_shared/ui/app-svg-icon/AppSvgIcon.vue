@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {
   defineAsyncComponent,
-  type Component,
-  watch,
   shallowReactive,
+  watch,
+  type Component,
 } from "vue";
 
 const props = withDefaults(
@@ -13,7 +13,7 @@ const props = withDefaults(
   }>(),
   {
     size: 24,
-  },
+  }
 );
 
 const getIconComponent = (name: string) =>
@@ -21,6 +21,7 @@ const getIconComponent = (name: string) =>
 
 const icons: Record<string, Component> = shallowReactive({
   camera: getIconComponent("camera"),
+  close: getIconComponent("x"),
 });
 
 watch(
@@ -32,7 +33,7 @@ watch(
   },
   {
     immediate: true,
-  },
+  }
 );
 </script>
 
