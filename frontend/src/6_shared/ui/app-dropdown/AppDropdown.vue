@@ -63,7 +63,7 @@ const emit = defineEmits<{
 }
 
 .app-dropdown:focus {
-  border-color: #409eff;
+  border-color: #42b983;
 }
 
 .app-dropdown:disabled {

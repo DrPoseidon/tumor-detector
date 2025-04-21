@@ -4,5 +4,5 @@ import Header from "@/widgets/header";
 
 <template>
   <Header />
-  <RouterView />
+  <RouterView style="padding: 20px 10%" />
 </template>

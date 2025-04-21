@@ -44,7 +44,12 @@ const router = useRouter();
 </template>
 
 <style scoped lang="scss">
+@import "@/shared/assets/styles/z-index.scss";
+
 .header {
+  position: sticky;
+  top: 0;
+  z-index: $z-index-header;
   height: 60px;
   padding: 0 40px;
   background-color: white;

@@ -87,7 +87,7 @@ const emit = defineEmits<{
       -webkit-appearance: none;
       width: 16px;
       height: 16px;
-      background: #409eff;
+      background: #42b983;
       border-radius: 50%;
       cursor: pointer;
       transition: background 0.2s;
@@ -99,13 +99,13 @@ const emit = defineEmits<{
     }
 
     &::-webkit-slider-thumb:hover {
-      background: #66b1ff;
+      background: #42b983;
     }
 
     &::-moz-range-thumb {
       width: 16px;
       height: 16px;
-      background: #409eff;
+      background: #42b983;
       border-radius: 50%;
       cursor: pointer;
       transition: background 0.2s;

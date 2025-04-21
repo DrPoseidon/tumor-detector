@@ -1,10 +1,19 @@
 <template>
-  <button class="app-button" @click="$emit('click')">
+  <button
+    class="app-button"
+    :class="{ 'app-button--disabled': disabled }"
+    :disabled="disabled"
+    @click="$emit('click')"
+  >
     <slot />
   </button>
 </template>
 
 <script setup lang="ts">
+defineProps<{
+  disabled?: boolean;
+}>();
+
 defineEmits<{
   click: [];
 }>();
@@ -19,14 +28,20 @@ defineEmits<{
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 
-  &:hover {
+  &:hover:not(&--disabled) {
     background-color: darken(#42b983, 10%);
   }
 
-  &:active {
+  &:active:not(&--disabled) {
     background-color: darken(#42b983, 15%);
+  }
+
+  &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #c0c4cc;
   }
 }
 </style>

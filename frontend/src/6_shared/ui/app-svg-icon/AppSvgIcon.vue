@@ -22,6 +22,7 @@ const getIconComponent = (name: string) =>
 const icons: Record<string, Component> = shallowReactive({
   camera: getIconComponent("camera"),
   close: getIconComponent("x"),
+  reset: getIconComponent("reset"),
 });
 
 watch(

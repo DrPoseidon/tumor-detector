@@ -2,9 +2,9 @@
 import { PhotoPreprocessing } from "@/features/photo";
 import AppFileUploader from "@/shared/ui/app-file-uploader";
 import AppPopup from "@/shared/ui/app-popup";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
-const images = ref<Record<string, string>>({});
+const files = ref<Record<string, File>>({});
 const selectedImage = ref<string>();
 
 const isShowPopup = ref(false);
@@ -14,14 +14,25 @@ watch(selectedImage, (value) => {
   isShowPopup.value = Boolean(value);
 });
 
-const uploadFiles = (files: File[]) => {
-  files.forEach((file) => {
+const uploadFiles = (_files: File[]) => {
+  _files.forEach((file) => {
     if (file.type.startsWith("image/")) {
-      const imgUrl = URL.createObjectURL(file);
-      images.value[file.name] = imgUrl;
+      files.value[file.name] = file;
     }
   });
 };
+
+const images = computed(() => {
+  return Object.entries(files.value).reduce(
+    (acc, entry) => {
+      const [name, file] = entry;
+
+      acc[name] = URL.createObjectURL(file);
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+});
 </script>
 
 <template>

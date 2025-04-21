@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import NoiseReduction from "@/4_features/photo/noise-reduction/NoiseReduction.vue";
+import NoiseReduction from "@/features/photo/noise-reduction/NoiseReduction.vue";
+import SmoothingAndBlurring from "@/features/photo/smoothing-and-blurring/SmoothingAndBlurring.vue";
+import AppButton from "@/shared/ui/app-button/AppButton.vue";
 import AppChip from "@/shared/ui/app-chip";
-import { reactive, ref } from "vue";
-import SmoothingAndBlurring from "../smoothing-and-blurring/SmoothingAndBlurring.vue";
+import AppSvgIcon from "@/shared/ui/app-svg-icon/AppSvgIcon.vue";
+import { reactive, ref, watch } from "vue";
 
 defineProps<{
   photo: string;
 }>();
 
 const selectedFilter = ref<string>();
+const isResetAvailable = ref(false);
 
 const toggleFilter = (filterId: string) => {
   selectedFilter.value = filterId;
@@ -52,6 +55,20 @@ const filters = reactive({
     label: "Выравнивание и выпрямление",
   },
 });
+
+watch(
+  filters,
+  () => {
+    isResetAvailable.value = true;
+  },
+  { deep: true }
+);
+
+const resetFilters = () => {
+  isResetAvailable.value = true;
+
+  // TODO: сброс фильтров
+};
 </script>
 
 <template>
@@ -59,6 +76,10 @@ const filters = reactive({
     <img class="photo-preprocessing__img" :src="photo" />
 
     <div class="photo-preprocessing__filters">
+      <AppButton :disabled="!isResetAvailable" @click="resetFilters">
+        <AppSvgIcon name="reset" :size="15" />
+      </AppButton>
+
       <AppChip
         v-for="(filter, id) in filters"
         :key="id"
@@ -92,7 +113,7 @@ const filters = reactive({
   gap: 20px;
 
   &__img {
-    width: 300px;
+    width: 100%;
     aspect-ratio: 1;
     object-fit: contain;
     border-radius: 8px;

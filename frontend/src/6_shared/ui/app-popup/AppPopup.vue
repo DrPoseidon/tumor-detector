@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watch } from "vue";
 import AppSvgIcon from "../app-svg-icon/AppSvgIcon.vue";
 
 const { header = "", isVisible = false } = defineProps<{
@@ -9,6 +10,18 @@ const { header = "", isVisible = false } = defineProps<{
 const emit = defineEmits<{
   close: [];
 }>();
+
+const toggleBodyScroll = (isLocked: boolean) => {
+  document.body.style.overflow = isLocked ? "hidden" : "";
+};
+
+watch(
+  () => isVisible,
+  (newValue) => {
+    toggleBodyScroll(newValue);
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -30,8 +43,11 @@ const emit = defineEmits<{
 </template>
 
 <style scoped lang="scss">
+@import "@/shared/assets/styles/z-index.scss";
+
 .app-popup__overlay {
   position: fixed;
+  z-index: $z-index-popup;
   top: 0;
   left: 0;
   width: 100%;
