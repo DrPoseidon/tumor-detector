@@ -1,13 +1,19 @@
 <script setup lang="ts">
+import { Photo, usePhotoStore } from "@/entities/photo";
 import NoiseReduction from "@/features/photo/noise-reduction/NoiseReduction.vue";
 import SmoothingAndBlurring from "@/features/photo/smoothing-and-blurring/SmoothingAndBlurring.vue";
-import AppButton from "@/shared/ui/app-button/AppButton.vue";
+import AppButton from "@/shared/ui/app-button";
 import AppChip from "@/shared/ui/app-chip";
-import AppSvgIcon from "@/shared/ui/app-svg-icon/AppSvgIcon.vue";
-import { reactive, ref, watch } from "vue";
+import AppSvgIcon from "@/shared/ui/app-svg-icon";
+import { computed, reactive, ref, watch } from "vue";
 
-defineProps<{
-  photo: string;
+const photoStore = usePhotoStore();
+const photo = computed(() => {
+  return photoStore.images[props.photoId];
+});
+
+const props = defineProps<{
+  photoId: string;
 }>();
 
 const selectedFilter = ref<string>();
@@ -73,7 +79,7 @@ const resetFilters = () => {
 
 <template>
   <div class="photo-preprocessing">
-    <img class="photo-preprocessing__img" :src="photo" />
+    <Photo :img-url="photo" :clickable="false" />
 
     <div class="photo-preprocessing__filters">
       <AppButton :disabled="!isResetAvailable" @click="resetFilters">
@@ -111,16 +117,6 @@ const resetFilters = () => {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-
-  &__img {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: #f5f5f5;
-    grid-area: 1/1;
-  }
 
   &__filters {
     display: flex;

@@ -25,12 +25,7 @@
     <!-- Модальное окно загрузки -->
     <div v-if="isUploading" class="upload-modal">
       <div class="upload-modal__content">
-        <div class="upload-modal__progress">
-          <div
-            class="upload-modal__progress-bar"
-            :style="{ width: `${uploadProgress}%` }"
-          ></div>
-        </div>
+        <AppProgress :progress="uploadProgress" />
         <p class="upload-modal__status">{{ uploadStatus }}</p>
       </div>
     </div>
@@ -41,6 +36,7 @@
 import AppButton from "@/shared/ui/app-button/AppButton.vue";
 import AppSvgIcon from "@/shared/ui/app-svg-icon";
 import { ref } from "vue";
+import AppProgress from "../app-progress/AppProgress.vue";
 import { useUploadProgress } from "./composables/useUploadProgress";
 import { DEFAULT_ACCEPT } from "./config";
 
@@ -154,20 +150,6 @@ const emitFiles = (files: FileList) => {
   &__content {
     width: 80%;
     text-align: center;
-  }
-
-  &__progress {
-    height: 4px;
-    background: #eee;
-    border-radius: 2px;
-    margin-bottom: 1rem;
-  }
-
-  &__progress-bar {
-    height: 100%;
-    background: #42b983;
-    border-radius: 2px;
-    transition: width 0.2s ease;
   }
 
   &__status {

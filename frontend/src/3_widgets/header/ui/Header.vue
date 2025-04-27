@@ -8,11 +8,11 @@ const tabs = [
   },
   {
     label: "Предобработка",
-    path: "/1",
+    path: "/preprocessing",
   },
   {
     label: "Классификация",
-    path: "/2",
+    path: "/classification",
   },
   {
     label: "История исследований",
@@ -34,7 +34,10 @@ const router = useRouter();
       :key="index"
       class="header__link"
       :class="{
-        'header__link--selected': router.currentRoute.value.path === tab.path,
+        'header__link--selected':
+          tab.path === '/'
+            ? router.currentRoute.value.path === tab.path
+            : router.currentRoute.value.path.startsWith(tab.path),
       }"
       :to="tab.path"
     >

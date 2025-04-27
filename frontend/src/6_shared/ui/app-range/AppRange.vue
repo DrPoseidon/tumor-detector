@@ -6,6 +6,7 @@ interface IProps {
   step?: number;
   label?: string;
   disabled?: boolean;
+  hideValue?: boolean;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   step = 1,
   label = "Значение",
   disabled = false,
+  hideValue = false,
 } = defineProps<IProps>();
 
 const emit = defineEmits<{
@@ -41,7 +43,7 @@ const emit = defineEmits<{
           )
         "
       />
-      <span class="app-range__value">{{ modelValue }}</span>
+      <span v-if="!hideValue" class="app-range__value">{{ modelValue }}</span>
     </div>
   </div>
 </template>
@@ -64,6 +66,7 @@ const emit = defineEmits<{
   }
 
   &__container {
+    height: 16px;
     display: flex;
     align-items: center;
     gap: 12px;
