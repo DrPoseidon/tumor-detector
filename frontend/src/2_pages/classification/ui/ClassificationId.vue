@@ -2,20 +2,37 @@
 import { Photo, usePhotoStore } from "@/entities/photo";
 import AppButton from "@/shared/ui/app-button";
 import AppChip from "@/shared/ui/app-chip";
+import AppPopup from "@/shared/ui/app-popup/AppPopup.vue";
+import AppProgress from "@/shared/ui/app-progress/AppProgress.vue";
 import AppRange from "@/shared/ui/app-range";
 import AppSvgIcon from "@/shared/ui/app-svg-icon";
 import { computed, reactive, ref, watch } from "vue";
 import { useRoute } from "vue-router";
+
+import TestPhoto from "../../../../../test_images/test.jpg";
+import TestPhotoPesult from "../../../../../test_images/test--result.jpg";
+import { useToast } from "vue-toastification";
+
+const PROCESSING_STATUS = {
+  LOADING: "Обработка...",
+  SUCCESS: "Классификация завершена успешно!",
+  ERROR: "Ошибка во время обработки, повторите позже",
+} as const;
+
+const toast = useToast();
 
 const route = useRoute();
 const photoStore = usePhotoStore();
 const selectedClassificator = ref<string>();
 const isResetAvailable = ref(false);
 
-const photo = computed(() => {
-  const id = route.params.id as string;
-  return photoStore.images[id];
+const originalPhoto = computed(() => {
+  // const id = route.params.id as string;
+  // return photoStore.images[id];
+  return TestPhoto;
 });
+
+const resultPhoto = ref<typeof TestPhotoPesult | null>(null);
 
 const toggleFilter = (filterId: string) => {
   selectedClassificator.value = filterId;
@@ -41,7 +58,7 @@ watch(
   () => {
     isResetAvailable.value = true;
   },
-  { deep: true }
+  { deep: true },
 );
 
 const resetFilters = () => {
@@ -49,16 +66,70 @@ const resetFilters = () => {
 
   // TODO: сброс фильтров
 };
+
+const uploadProgress = ref(0);
+const uploadStatus = ref("");
+const classificationInProgress = ref(false);
+const applyClassification = async () => {
+  classificationInProgress.value = true;
+
+  uploadProgress.value = 0;
+  uploadStatus.value = PROCESSING_STATUS.LOADING;
+
+  try {
+    // Имитация загрузки (замените на реальную логику загрузки)
+    await new Promise((resolve) => {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        uploadProgress.value = progress;
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          resolve(true);
+        }
+      }, 200);
+    });
+
+    uploadStatus.value = PROCESSING_STATUS.SUCCESS;
+    resultPhoto.value = TestPhotoPesult;
+
+    setTimeout(() => {
+      classificationInProgress.value = false;
+    }, 2000);
+  } catch (error) {
+    uploadStatus.value = PROCESSING_STATUS.ERROR;
+    console.error(error);
+  }
+};
+
+const saveResult = () => {
+  toast.success(
+    "Результат исследования сохранен. \nДля просмотра откройте раздел «Результаты»",
+    {
+      timeout: 3000,
+    },
+  );
+};
 </script>
 
 <template>
   <div class="photo-classification">
-    <Photo :img-url="photo" :clickable="false" />
+    <Photo
+      :img-url="originalPhoto"
+      class="photo-classification__original-photo"
+      :clickable="false"
+    />
+
+    <Photo
+      v-if="resultPhoto"
+      :img-url="resultPhoto"
+      class="photo-classification__result-photo"
+      :clickable="false"
+    />
 
     <div class="photo-classification__filters">
-      <AppButton :disabled="!isResetAvailable" @click="resetFilters">
-        <AppSvgIcon name="reset" :size="15" />
-      </AppButton>
+      <b style="line-height: 31px">Параметры обработки:</b>
 
       <AppChip
         v-for="(filter, id) in classificationMethods"
@@ -99,6 +170,30 @@ const resetFilters = () => {
         </div>
       </div>
     </div>
+
+    <AppButton
+      class="photo-classification__apply-btn"
+      :variant="resultPhoto ? 'secondary' : 'primary'"
+      @click="resultPhoto ? resetFilters : applyClassification"
+    >
+      {{
+        resultPhoto ? "Сбросить параметры" : "Запустить обработку"
+      }}</AppButton
+    >
+
+    <AppButton
+      v-if="resultPhoto"
+      class="photo-classification__save-btn"
+      @click="saveResult"
+      >Сохранить результат</AppButton
+    >
+
+    <AppPopup :is-visible="classificationInProgress" :closable="false">
+      <template #body>
+        <AppProgress :progress="uploadProgress" />
+        <p class="photo-classification__status">{{ uploadStatus }}</p>
+      </template>
+    </AppPopup>
   </div>
 </template>
 
@@ -107,6 +202,23 @@ const resetFilters = () => {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+
+  &__original-photo {
+    grid-area: 1/1;
+  }
+
+  &__result-photo {
+    grid-area: 1/2;
+  }
+
+  &__apply-btn {
+    height: min-content;
+    grid-area: 2/1;
+  }
+
+  &__save-btn {
+    grid-area: 2/2;
+  }
 
   &__img {
     width: 100%;
@@ -124,18 +236,23 @@ const resetFilters = () => {
     flex-wrap: wrap;
     gap: 10px;
     height: fit-content;
-    grid-area: 1/2;
+    grid-column: 1/2;
+    grid-row: 3/4;
   }
 
   &__selected-filter {
-    grid-row: 2/3;
-    grid-column: 1/3;
+    grid-area: 2/3;
   }
 
   &__active-contours {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+  }
+
+  &__status {
+    color: #666;
+    margin: 0;
   }
 }
 </style>

@@ -4,13 +4,14 @@ import NoiseReduction from "@/features/photo/noise-reduction/NoiseReduction.vue"
 import SmoothingAndBlurring from "@/features/photo/smoothing-and-blurring/SmoothingAndBlurring.vue";
 import AppButton from "@/shared/ui/app-button";
 import AppChip from "@/shared/ui/app-chip";
-import AppSvgIcon from "@/shared/ui/app-svg-icon";
 import { computed, reactive, ref, watch } from "vue";
 
 const photoStore = usePhotoStore();
-const photo = computed(() => {
+const originalPhoto = computed(() => {
   return photoStore.images[props.photoId];
 });
+
+const filteredPhoto = ref<string | null>(null);
 
 const props = defineProps<{
   photoId: string;
@@ -67,24 +68,58 @@ watch(
   () => {
     isResetAvailable.value = true;
   },
-  { deep: true }
+  { deep: true },
 );
 
 const resetFilters = () => {
   isResetAvailable.value = true;
+  filteredPhoto.value = null;
 
   // TODO: сброс фильтров
+};
+
+const applyFilters = () => {
+  // TODO: применить фильтры
+
+  filteredPhoto.value = originalPhoto.value;
 };
 </script>
 
 <template>
   <div class="photo-preprocessing">
-    <Photo :img-url="photo" :clickable="false" />
+    <div class="photo-preprocessing__photo-row">
+      <div class="photo-preprocessing__photo-column">
+        <Photo :img-url="originalPhoto" :clickable="false" />
+
+        <AppButton
+          class="photo-preprocessing__btn"
+          :disabled="!isResetAvailable"
+          @click="applyFilters"
+        >
+          Применить настройки
+        </AppButton>
+      </div>
+
+      <div v-if="filteredPhoto" class="photo-preprocessing__photo-column">
+        <Photo
+          class="photo-preprocessing__photo-filtered"
+          :img-url="originalPhoto"
+          :clickable="false"
+        />
+
+        <AppButton
+          class="photo-preprocessing__btn"
+          :disabled="!isResetAvailable"
+          variant="secondary"
+          @click="resetFilters"
+        >
+          Сбросить обработку
+        </AppButton>
+      </div>
+    </div>
 
     <div class="photo-preprocessing__filters">
-      <AppButton :disabled="!isResetAvailable" @click="resetFilters">
-        <AppSvgIcon name="reset" :size="15" />
-      </AppButton>
+      <b style="line-height: 31px">Параметры фильтрации:</b>
 
       <AppChip
         v-for="(filter, id) in filters"
@@ -118,18 +153,43 @@ const resetFilters = () => {
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 
+  &__photo-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    grid-column: 1/3;
+    grid-row: 1/2;
+  }
+
+  &__photo-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  &__btn {
+    width: 100%;
+  }
+
+  &__photo-filtered {
+    filter: contrast(1.2) blur(2px) invert(1);
+    transition: filter 0.3s ease;
+  }
+
   &__filters {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 10px;
     height: fit-content;
-    grid-area: 1/2;
+    grid-column: 1/1;
+    grid-row: 2/3;
   }
 
   &__selected-filter {
+    grid-column: 2/2;
     grid-row: 2/3;
-    grid-column: 1/3;
   }
 }
 </style>

@@ -1,28 +1,11 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { routes } from "@/app/router/routes";
+import { computed } from "vue";
 
-const tabs = [
-  {
-    label: "Загрузка изображений",
-    path: "/",
-  },
-  {
-    label: "Предобработка",
-    path: "/preprocessing",
-  },
-  {
-    label: "Классификация",
-    path: "/classification",
-  },
-  {
-    label: "История исследований",
-    path: "/3",
-  },
-  {
-    label: "Результаты",
-    path: "/4",
-  },
-];
+const tabs = computed(() =>
+  routes.filter((route) => route?.meta?.isVisibleInHeader),
+);
 
 const router = useRouter();
 </script>
@@ -41,7 +24,7 @@ const router = useRouter();
       }"
       :to="tab.path"
     >
-      {{ tab.label }}
+      {{ tab?.meta?.title ?? tab.name }}
     </router-link>
   </div>
 </template>

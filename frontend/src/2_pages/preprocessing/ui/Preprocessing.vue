@@ -18,7 +18,7 @@ const isEmpty = computed(() => !Object.keys(photoStore.images).length);
       v-if="isEmpty"
       class="preprocessing__empty-state"
       button-text="Перейти к загрузке"
-      route="/"
+      route="/photo-upload"
       text="Нет загруженных изображений"
     />
 
