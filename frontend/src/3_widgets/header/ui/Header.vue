@@ -1,13 +1,24 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
 import { routes } from "@/app/router/routes";
 import { computed } from "vue";
+import { useRouter } from "vue-router";
 
 const tabs = computed(() =>
-  routes.filter((route) => route?.meta?.isVisibleInHeader),
+  routes.filter((route) => route?.meta?.isVisibleInHeader)
 );
 
 const router = useRouter();
+
+const isRouteActive = (path: string) => {
+  const currentPath = router.currentRoute.value.path;
+
+  if (path === "/") {
+    // Для главной страницы проверяем и точное совпадение, и дочерние маршруты
+    return currentPath === path || currentPath.startsWith("/article/");
+  }
+
+  return currentPath.startsWith(path);
+};
 </script>
 
 <template>
@@ -17,10 +28,7 @@ const router = useRouter();
       :key="index"
       class="header__link"
       :class="{
-        'header__link--selected':
-          tab.path === '/'
-            ? router.currentRoute.value.path === tab.path
-            : router.currentRoute.value.path.startsWith(tab.path),
+        'header__link--selected': isRouteActive(tab.path),
       }"
       :to="tab.path"
     >

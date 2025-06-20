@@ -1,11 +1,18 @@
 import { type RouteRecordRaw } from "vue-router";
 
-export const routes = [
+export const routes: readonly RouteRecordRaw[] = [
   {
     path: "/",
     name: "home",
-    meta: { title: "Главная", isVisibleInHeader: true },
+    meta: { title: "Справочник", isVisibleInHeader: true },
     component: () => import("@/pages/home"),
+    children: [
+      {
+        path: "/article/faq",
+        meta: { title: "Как пользоваться системой?" },
+        component: async () => (await import("@/pages/home")).FAQ,
+      },
+    ],
   },
   {
     path: "/photo-upload",
@@ -32,4 +39,22 @@ export const routes = [
     component: async () =>
       (await import("@/pages/classification")).ClassificationId,
   },
-] satisfies Readonly<RouteRecordRaw[]>;
+  {
+    path: "/results",
+    name: "results",
+    component: () => import("@/pages/results"),
+    meta: { title: "Результаты", isVisibleInHeader: true },
+    children: [
+      {
+        path: "/:id",
+        name: "results-id",
+        component: async () => (await import("@/pages/results")).ResultsId,
+      },
+    ],
+  },
+  {
+    path: "/results/:id",
+    name: "results-id",
+    component: async () => (await import("@/pages/results")).ResultsId,
+  },
+];

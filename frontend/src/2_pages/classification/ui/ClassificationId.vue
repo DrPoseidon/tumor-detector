@@ -5,13 +5,12 @@ import AppChip from "@/shared/ui/app-chip";
 import AppPopup from "@/shared/ui/app-popup/AppPopup.vue";
 import AppProgress from "@/shared/ui/app-progress/AppProgress.vue";
 import AppRange from "@/shared/ui/app-range";
-import AppSvgIcon from "@/shared/ui/app-svg-icon";
 import { computed, reactive, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 
-import TestPhoto from "../../../../../test_images/test.jpg";
-import TestPhotoPesult from "../../../../../test_images/test--result.jpg";
 import { useToast } from "vue-toastification";
+import TestPhotoPesult from "../../../../../test_images/test--result.jpg";
+import TestPhoto from "../../../../../test_images/test.jpg";
 
 const PROCESSING_STATUS = {
   LOADING: "Обработка...",
@@ -58,7 +57,7 @@ watch(
   () => {
     isResetAvailable.value = true;
   },
-  { deep: true },
+  { deep: true }
 );
 
 const resetFilters = () => {
@@ -108,7 +107,7 @@ const saveResult = () => {
     "Результат исследования сохранен. \nДля просмотра откройте раздел «Результаты»",
     {
       timeout: 3000,
-    },
+    }
   );
 };
 </script>
@@ -174,7 +173,7 @@ const saveResult = () => {
     <AppButton
       class="photo-classification__apply-btn"
       :variant="resultPhoto ? 'secondary' : 'primary'"
-      @click="resultPhoto ? resetFilters : applyClassification"
+      @click="resultPhoto ? resetFilters() : applyClassification()"
     >
       {{
         resultPhoto ? "Сбросить параметры" : "Запустить обработку"
