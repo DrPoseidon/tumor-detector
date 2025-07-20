@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppNote from "@/6_shared/ui/app-note";
 import { usePhotoStore } from "@/entities/photo";
 import AppEmptyState from "@/shared/ui/app-empty-state";
 import { PhotoList } from "@/widgets/photo";
@@ -26,7 +27,13 @@ const isEmpty = computed(() => !Object.keys(photoStore.images).length);
       text="Нет загруженных изображений"
     />
 
-    <PhotoList v-else @select="handlePhotoSelect" />
+    <template v-else>
+      <AppNote class="preprocessing__info-banner">
+        💡 Кликните на изображение, чтобы начать классификацию
+      </AppNote>
+
+      <PhotoList @select="handlePhotoSelect" />
+    </template>
   </div>
 </template>
 

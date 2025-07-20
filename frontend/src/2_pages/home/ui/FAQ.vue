@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import AppNote from "@/6_shared/ui/app-note";
+</script>
 
 <template>
   <div class="faq">
@@ -26,12 +28,10 @@
           class="faq__image"
         />
 
-        <div class="faq__note">
-          <p class="faq__text">
-            ⚠️ Система поддерживает загрузку нескольких изображений в формате
-            DICOM, PNG и JPG
-          </p>
-        </div>
+        <AppNote>
+          ⚠️ Система поддерживает загрузку нескольких изображений в формате
+          DICOM, PNG и JPG
+        </AppNote>
 
         <p class="faq__text">
           После успешной загрузки Вы увидете соответствующее сообщение. Теперь
@@ -107,19 +107,6 @@
     margin: 1.5rem auto;
     display: block;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  &__note {
-    background-color: #fff3cd;
-    border-left: 4px solid #ffc107;
-    padding: 1rem;
-    border-radius: 4px;
-    margin-top: 1.5rem;
-
-    .faq__text {
-      margin-bottom: 0;
-      color: #856404;
-    }
   }
 }
 </style>

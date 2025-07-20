@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { usePhotoStore } from "@/5_entities/photo";
+import AppNote from "@/6_shared/ui/app-note";
 import PhotoPreprocessing from "@/features/photo/preprocessing";
 import AppEmptyState from "@/shared/ui/app-empty-state";
 import AppPopup from "@/shared/ui/app-popup";
@@ -22,7 +23,13 @@ const isEmpty = computed(() => !Object.keys(photoStore.images).length);
       text="Нет загруженных изображений"
     />
 
-    <PhotoList v-else @select="photoId = $event" />
+    <template v-else>
+      <AppNote class="preprocessing__info-banner">
+        💡 Кликните на изображение, чтобы начать предобработку
+      </AppNote>
+
+      <PhotoList @select="photoId = $event" />
+    </template>
 
     <AppPopup
       :is-visible="Boolean(photoId)"

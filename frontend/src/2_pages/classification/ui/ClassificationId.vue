@@ -210,8 +210,12 @@ const saveResult = () => {
     grid-area: 1/2;
   }
 
-  &__apply-btn {
+  &__apply-btn,
+  &__save-btn {
     height: min-content;
+  }
+
+  &__apply-btn {
     grid-area: 2/1;
   }
 
